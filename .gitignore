@@ -1,0 +1,41 @@
+# ── DevTrack AI Root .gitignore ─────────────────────────────────────
+
+# ── Backend (Spring Boot / Maven) ────────────────────────────────────
+devtrack_backend/target/
+devtrack_backend/.mvn/wrapper/maven-wrapper.jar
+devtrack_backend/*.iws
+devtrack_backend/*.iml
+devtrack_backend/*.ipr
+devtrack_backend/.idea/
+devtrack_backend/.classpath
+devtrack_backend/.project
+devtrack_backend/.settings/
+
+# ── Frontend (Flutter) ────────────────────────────────────────────────
+devtrack_frontend/.dart_tool/
+devtrack_frontend/.flutter-plugins
+devtrack_frontend/.flutter-plugins-dependencies
+devtrack_frontend/.packages
+devtrack_frontend/build/
+devtrack_frontend/.pub-cache/
+devtrack_frontend/.pub/
+devtrack_frontend/android/local.properties
+devtrack_frontend/android/.gradle/
+devtrack_frontend/android/app/debug/
+devtrack_frontend/android/app/profile/
+devtrack_frontend/android/app/release/
+devtrack_frontend/ios/.symlinks/
+devtrack_frontend/ios/Pods/
+devtrack_frontend/ios/Flutter/App.framework/
+devtrack_frontend/ios/Flutter/Flutter.framework/
+
+# ── General ───────────────────────────────────────────────────────────
+.DS_Store
+*.env
+.env.local
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.log
