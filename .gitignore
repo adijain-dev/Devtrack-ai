@@ -42,6 +42,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+# Local secrets & configs
+**/application-local.properties
 
 # Local backups
 devtrack_ai_project/
