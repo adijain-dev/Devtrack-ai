@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/storage/offline_cache_service.dart';
 import '../../domain/entities/internship.dart';
 import '../../domain/repositories/internship_repository.dart';
 import '../../data/providers/internship_repository_provider.dart';
@@ -50,19 +51,27 @@ class InternshipNotifier extends Notifier<InternshipState> {
   @override
   InternshipState build() {
     _repo = ref.read(internshipRepositoryProvider);
-    Future.microtask(fetchAll);
+    Future.microtask(() async {
+      final cached = await OfflineCacheService().getCachedInternships();
+      if (cached.isNotEmpty) {
+        state = state.copyWith(internships: cached, isLoading: false);
+      }
+      await fetchAll(silent: cached.isNotEmpty);
+    });
     return const InternshipState(isLoading: true);
   }
 
-  Future<void> fetchAll() async {
-    state = state.copyWith(isLoading: true, error: null);
+  Future<void> fetchAll({bool silent = false}) async {
+    if (!silent && state.internships.isEmpty) {
+      state = state.copyWith(isLoading: true, error: null);
+    }
     try {
       final list = await _repo.getAll();
       state = state.copyWith(internships: list, isLoading: false);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: e.toString().replaceFirst('Exception: ', ''),
+        error: state.internships.isEmpty ? e.toString().replaceFirst('Exception: ', '') : null,
       );
     }
   }

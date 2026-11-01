@@ -17,6 +17,7 @@ class DsaFormScreen extends ConsumerStatefulWidget {
 class _DsaFormScreenState extends ConsumerState<DsaFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _topicName;
+  late final TextEditingController _problemUrl;
   late final TextEditingController _notes;
   late DsaCategory _category;
   late DsaDifficulty _difficulty;
@@ -26,15 +27,17 @@ class _DsaFormScreenState extends ConsumerState<DsaFormScreen> {
   void initState() {
     super.initState();
     final t = widget.topic;
-    _topicName = TextEditingController(text: t?.topicName ?? '');
-    _notes     = TextEditingController(text: t?.notes ?? '');
-    _category  = t?.category  ?? DsaCategory.arrays;
-    _difficulty = t?.difficulty ?? DsaDifficulty.easy;
+    _topicName   = TextEditingController(text: t?.topicName ?? '');
+    _problemUrl  = TextEditingController(text: t?.problemUrl ?? '');
+    _notes       = TextEditingController(text: t?.notes ?? '');
+    _category    = t?.category  ?? DsaCategory.arrays;
+    _difficulty  = t?.difficulty ?? DsaDifficulty.easy;
   }
 
   @override
   void dispose() {
     _topicName.dispose();
+    _problemUrl.dispose();
     _notes.dispose();
     super.dispose();
   }
@@ -45,14 +48,19 @@ class _DsaFormScreenState extends ConsumerState<DsaFormScreen> {
 
     final notifier = ref.read(dsaNotifierProvider.notifier);
     final topic = DsaTopicModel(
-      id:            widget.topic?.id ?? '',
-      topicName:     _topicName.text.trim(),
-      category:      _category,
-      difficulty:    _difficulty,
-      isSolved:      widget.topic?.isSolved ?? false,
-      solvedDate:    widget.topic?.solvedDate,
-      notes:         _notes.text.trim().isEmpty ? null : _notes.text.trim(),
-      practiceCount: widget.topic?.practiceCount ?? 0,
+      id:                   widget.topic?.id ?? '',
+      topicName:            _topicName.text.trim(),
+      category:             _category,
+      difficulty:           _difficulty,
+      isSolved:             widget.topic?.isSolved ?? false,
+      solvedDate:           widget.topic?.solvedDate,
+      nextRevisionDate:     widget.topic?.nextRevisionDate,
+      revisionIntervalDays: widget.topic?.revisionIntervalDays ?? 7,
+      needsRevision:        widget.topic?.needsRevision ?? false,
+      platform:             widget.topic?.platform ?? 'MANUAL',
+      problemUrl:           _problemUrl.text.trim().isEmpty ? null : _problemUrl.text.trim(),
+      notes:                _notes.text.trim().isEmpty ? null : _notes.text.trim(),
+      practiceCount:        widget.topic?.practiceCount ?? 0,
     );
 
     final success = widget.topic != null
@@ -76,6 +84,17 @@ class _DsaFormScreenState extends ConsumerState<DsaFormScreen> {
     final isEditing = widget.topic != null;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Back',
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/dsa');
+            }
+          },
+        ),
         title: Text(isEditing ? 'Edit Topic' : 'Add DSA Topic'),
       ),
       body: SingleChildScrollView(
@@ -124,6 +143,18 @@ class _DsaFormScreenState extends ConsumerState<DsaFormScreen> {
                     .map((d) => DropdownMenuItem(value: d, child: Text(d.label)))
                     .toList(),
                 onChanged: (v) => setState(() => _difficulty = v!),
+              ),
+              const SizedBox(height: 14),
+
+              // Problem URL
+              TextFormField(
+                controller: _problemUrl,
+                decoration: InputDecoration(
+                  labelText: 'Problem URL (optional)',
+                  hintText: 'https://leetcode.com/problems/...',
+                  prefixIcon: const Icon(Icons.link),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               ),
               const SizedBox(height: 14),
 

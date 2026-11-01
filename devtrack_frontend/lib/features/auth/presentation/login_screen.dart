@@ -99,10 +99,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   obscureText: true,
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 24),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => context.go('/forgot-password'),
+                    child: const Text('Forgot Password?'),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: _login,
                   child: const Text('Login'),
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    ref.read(authNotifierProvider.notifier).continueAsDemoUser();
+                    context.go('/home');
+                  },
+                  icon: const Icon(Icons.rocket_launch_outlined),
+                  label: const Text('Explore / Demo Mode (Skip Auth)'),
                 ),
                 const SizedBox(height: 16),
                 TextButton(

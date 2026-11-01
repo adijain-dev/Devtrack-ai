@@ -32,6 +32,16 @@ public class User {
     @Size(max = 120)
     private String password;
 
+    private String avatarUrl;
+
+    private String leetcodeUsername;
+
+    private String codeforcesHandle;
+
+    private String resetPasswordToken;
+
+    private java.time.LocalDateTime resetPasswordExpiry;
+
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;

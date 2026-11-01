@@ -4,30 +4,38 @@ import '../../domain/entities/dsa_topic.dart';
 class DsaState {
   final List<DsaTopic> topics;
   final bool isLoading;
+  final bool isSyncing;
   final String? error;
   final DsaCategory? selectedCategory; // null = show all
   final DsaDifficulty? selectedDifficulty; // null = show all
+  final bool showOnlyDueRevisions;
+  final Map<String, dynamic>? lastSyncStats;
 
   const DsaState({
     this.topics = const [],
     this.isLoading = false,
+    this.isSyncing = false,
     this.error,
     this.selectedCategory,
     this.selectedDifficulty,
+    this.showOnlyDueRevisions = false,
+    this.lastSyncStats,
   });
 
-  /// Filtered list based on selected category + difficulty
+  /// Filtered list based on selected category + difficulty + revision filter
   List<DsaTopic> get filtered {
     return topics.where((t) {
+      if (showOnlyDueRevisions && !t.needsRevision) return false;
       final matchCat = selectedCategory == null || t.category == selectedCategory;
       final matchDiff = selectedDifficulty == null || t.difficulty == selectedDifficulty;
       return matchCat && matchDiff;
     }).toList();
   }
 
-  int get totalCount   => topics.length;
-  int get solvedCount  => topics.where((t) => t.isSolved).length;
-  int get pendingCount => topics.where((t) => !t.isSolved).length;
+  int get totalCount        => topics.length;
+  int get solvedCount       => topics.where((t) => t.isSolved).length;
+  int get pendingCount      => topics.where((t) => !t.isSolved).length;
+  int get dueRevisionsCount => topics.where((t) => t.needsRevision).length;
 
   /// Streak: count of consecutive days with at least one topic solved
   int get streak {
@@ -62,19 +70,26 @@ class DsaState {
   DsaState copyWith({
     List<DsaTopic>? topics,
     bool? isLoading,
+    bool? isSyncing,
     String? error,
     DsaCategory? selectedCategory,
     DsaDifficulty? selectedDifficulty,
+    bool? showOnlyDueRevisions,
+    Map<String, dynamic>? lastSyncStats,
     bool clearCategory = false,
     bool clearDifficulty = false,
     bool clearError = false,
+    bool clearSyncStats = false,
   }) {
     return DsaState(
-      topics:             topics ?? this.topics,
-      isLoading:          isLoading ?? this.isLoading,
-      error:              clearError ? null : (error ?? this.error),
-      selectedCategory:   clearCategory ? null : (selectedCategory ?? this.selectedCategory),
-      selectedDifficulty: clearDifficulty ? null : (selectedDifficulty ?? this.selectedDifficulty),
+      topics:                topics ?? this.topics,
+      isLoading:             isLoading ?? this.isLoading,
+      isSyncing:             isSyncing ?? this.isSyncing,
+      error:                 clearError ? null : (error ?? this.error),
+      selectedCategory:      clearCategory ? null : (selectedCategory ?? this.selectedCategory),
+      selectedDifficulty:    clearDifficulty ? null : (selectedDifficulty ?? this.selectedDifficulty),
+      showOnlyDueRevisions:  showOnlyDueRevisions ?? this.showOnlyDueRevisions,
+      lastSyncStats:         clearSyncStats ? null : (lastSyncStats ?? this.lastSyncStats),
     );
   }
 }

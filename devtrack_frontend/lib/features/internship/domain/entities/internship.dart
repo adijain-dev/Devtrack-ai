@@ -8,6 +8,10 @@ class Internship {
   final String? jobLink;
   final InternshipStatus status;
   final String? appliedDate; // stored as ISO string (yyyy-MM-dd)
+  final String? interviewDate; // stored as ISO string (yyyy-MM-ddTHH:mm:ss)
+  final bool reminderEnabled;
+  final String? resumeUrl;
+  final String? resumeFileName;
   final String? notes;
 
   const Internship({
@@ -19,6 +23,10 @@ class Internship {
     this.jobLink,
     this.status = InternshipStatus.applied,
     this.appliedDate,
+    this.interviewDate,
+    this.reminderEnabled = false,
+    this.resumeUrl,
+    this.resumeFileName,
     this.notes,
   });
 
@@ -31,6 +39,10 @@ class Internship {
     String? jobLink,
     InternshipStatus? status,
     String? appliedDate,
+    String? interviewDate,
+    bool? reminderEnabled,
+    String? resumeUrl,
+    String? resumeFileName,
     String? notes,
   }) {
     return Internship(
@@ -42,6 +54,10 @@ class Internship {
       jobLink: jobLink ?? this.jobLink,
       status: status ?? this.status,
       appliedDate: appliedDate ?? this.appliedDate,
+      interviewDate: interviewDate ?? this.interviewDate,
+      reminderEnabled: reminderEnabled ?? this.reminderEnabled,
+      resumeUrl: resumeUrl ?? this.resumeUrl,
+      resumeFileName: resumeFileName ?? this.resumeFileName,
       notes: notes ?? this.notes,
     );
   }

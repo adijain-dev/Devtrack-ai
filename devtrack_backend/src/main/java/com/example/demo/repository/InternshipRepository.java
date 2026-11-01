@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface InternshipRepository extends JpaRepository<Internship, Long> {
     List<Internship> findByUserId(Long userId);
     Optional<Internship> findByIdAndUserId(Long id, Long userId);
+    List<Internship> findByUserIdAndInterviewDateIsNotNullOrderByInterviewDateAsc(Long userId);
 }

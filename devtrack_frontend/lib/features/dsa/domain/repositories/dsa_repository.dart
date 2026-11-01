@@ -12,4 +12,17 @@ abstract class DsaRepository {
 
   /// Delete a DSA topic by its id.
   Future<void> delete(String id);
+
+  /// Fetch topics that are due for spaced repetition revision.
+  Future<List<DsaTopic>> getTopicsDueForRevision();
+
+  /// Record a spaced repetition review for a topic.
+  Future<DsaTopic> reviewTopic(String id);
+
+  /// Sync statistics and solved problems from LeetCode or Codeforces.
+  Future<Map<String, dynamic>> syncProfile({
+    required String platform,
+    required String username,
+    bool importProblems = true,
+  });
 }

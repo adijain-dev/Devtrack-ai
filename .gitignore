@@ -10,6 +10,9 @@ devtrack_backend/.idea/
 devtrack_backend/.classpath
 devtrack_backend/.project
 devtrack_backend/.settings/
+devtrack_backend/*.mv.db
+devtrack_backend/*.lock.db
+devtrack_backend/*.db
 
 # ── Frontend (Flutter) ────────────────────────────────────────────────
 devtrack_frontend/.dart_tool/
@@ -39,3 +42,13 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Local backups
+devtrack_ai_project/
+*.zip
+
+
+# Local backups
+devtrack_ai_project/
+*.zip
+

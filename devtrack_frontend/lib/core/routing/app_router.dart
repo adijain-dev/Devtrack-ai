@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/presentation/providers/auth_state.dart';
 import '../../features/home/presentation/home_screen.dart';
@@ -12,6 +13,9 @@ import '../../features/internship/presentation/screens/internship_form_screen.da
 import '../../features/dsa/domain/entities/dsa_topic.dart';
 import '../../features/dsa/presentation/screens/dsa_screen.dart';
 import '../../features/dsa/presentation/screens/dsa_form_screen.dart';
+import '../../features/ai/presentation/screens/resume_generator_screen.dart';
+import '../../features/ai/presentation/screens/mock_interview_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authNotifierProvider);
@@ -21,7 +25,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isAuthenticated = authState.status == AuthStatus.authenticated;
       final isAuthRoute = state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register';
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/forgot-password';
 
       if (authState.status == AuthStatus.initial) return null;
       if (isAuthenticated && isAuthRoute) return '/home';
@@ -38,11 +43,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
 
       // ── Home ──────────────────────────────────────────────────────────
       GoRoute(
         path: '/home',
         builder: (context, state) => const HomeScreen(),
+      ),
+
+      // ── Profile & Settings ────────────────────────────────────────────
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
       ),
 
       // ── Internships ───────────────────────────────────────────────────
@@ -83,6 +98,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/analytics',
         builder: (context, state) => const AnalyticsDashboardScreen(),
+      ),
+
+      // ── AI Features ───────────────────────────────────────────────────
+      GoRoute(
+        path: '/ai/resume',
+        builder: (context, state) => const ResumeGeneratorScreen(),
+      ),
+      GoRoute(
+        path: '/ai/interview',
+        builder: (context, state) => const MockInterviewScreen(),
       ),
     ],
   );

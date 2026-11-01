@@ -39,6 +39,14 @@ public class Internship {
 
     private LocalDate appliedDate;
 
+    private java.time.LocalDateTime interviewDate;
+
+    private Boolean reminderEnabled = false;
+
+    private String resumeUrl;
+
+    private String resumeFileName;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 }

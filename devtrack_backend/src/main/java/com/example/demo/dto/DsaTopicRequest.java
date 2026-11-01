@@ -20,10 +20,11 @@ public class DsaTopicRequest {
     private DsaDifficulty difficulty;
 
     private boolean solved;
-    
     private LocalDate solvedDate;
-    
+    private LocalDate nextRevisionDate;
+    private Integer revisionIntervalDays;
+    private String platform;
+    private String problemUrl;
     private String notes;
-    
     private int practiceCount;
 }

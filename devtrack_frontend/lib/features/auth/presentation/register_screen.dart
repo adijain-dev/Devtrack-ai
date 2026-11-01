@@ -105,6 +105,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   onPressed: _register,
                   child: const Text('Create Account'),
                 ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    ref.read(authNotifierProvider.notifier).continueAsDemoUser();
+                    context.go('/home');
+                  },
+                  icon: const Icon(Icons.rocket_launch_outlined),
+                  label: const Text('Explore / Demo Mode (Skip Auth)'),
+                ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () => context.go('/login'),

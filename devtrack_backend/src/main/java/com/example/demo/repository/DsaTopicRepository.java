@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface DsaTopicRepository extends JpaRepository<DsaTopic, Long> {
     List<DsaTopic> findByUserId(Long userId);
     Optional<DsaTopic> findByIdAndUserId(Long id, Long userId);
+    List<DsaTopic> findByUserIdAndSolvedTrueAndNextRevisionDateLessThanEqualOrderByNextRevisionDateAsc(Long userId, java.time.LocalDate date);
+    Optional<DsaTopic> findByUserIdAndTopicNameIgnoreCase(Long userId, String topicName);
 }

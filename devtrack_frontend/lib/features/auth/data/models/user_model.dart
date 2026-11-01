@@ -4,19 +4,27 @@ import '../../domain/entities/user.dart';
 /// By extending the domain [User], we keep our business logic
 /// insulated from database/API JSON structures.
 class UserModel extends User {
+  final String? token;
+  final String? refreshToken;
+
   const UserModel({
     required super.id,
     required super.name,
     required super.email,
+    super.avatarUrl,
+    this.token,
+    this.refreshToken,
   });
 
   /// Factory constructor to parse the JSON response from Spring Boot.
-  /// Spring Boot returns fields like 'id', 'username' (which is the user's name), and 'email'.
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: (json['id'] ?? '').toString(),
-      name: json['username'] ?? '',
+      name: json['name'] ?? json['username'] ?? '',
       email: json['email'] ?? '',
+      avatarUrl: json['avatarUrl'],
+      token: json['token'],
+      refreshToken: json['refreshToken'],
     );
   }
 
@@ -24,8 +32,11 @@ class UserModel extends User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': name,
+      'name': name,
       'email': email,
+      'avatarUrl': avatarUrl,
+      if (token != null) 'token': token,
+      if (refreshToken != null) 'refreshToken': refreshToken,
     };
   }
 }

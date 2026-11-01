@@ -8,28 +8,35 @@ class AuthState {
   final AuthStatus status;
   final User? user;
   final String? errorMessage;
-  final String? token; // In-memory cache of the JWT token for API requests
+  final String? successMessage;
+  final String? token; // In-memory cache of the JWT token
+  final String? refreshToken;
 
   const AuthState({
     this.status = AuthStatus.initial,
     this.user,
     this.errorMessage,
+    this.successMessage,
     this.token,
+    this.refreshToken,
   });
 
   /// Helper method to clone the state with modified properties.
-  /// This implements the "immutability" pattern, which is standard in Riverpod.
   AuthState copyWith({
     AuthStatus? status,
     User? user,
     String? errorMessage,
+    String? successMessage,
     String? token,
+    String? refreshToken,
   }) {
     return AuthState(
       status: status ?? this.status,
       user: user ?? this.user,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: errorMessage,
+      successMessage: successMessage,
       token: token ?? this.token,
+      refreshToken: refreshToken ?? this.refreshToken,
     );
   }
 }

@@ -20,11 +20,38 @@ public class DsaTopicController {
     @Autowired
     private DsaTopicService dsaTopicService;
 
+    @Autowired
+    private com.example.demo.service.CodingProfileSyncService codingProfileSyncService;
+
     @GetMapping
     public ResponseEntity<List<DsaTopicResponse>> getAllTopics(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<DsaTopicResponse> topics = dsaTopicService.getAllTopics(userDetails.getId());
         return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/revisions")
+    public ResponseEntity<List<DsaTopicResponse>> getTopicsDueForRevision(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<DsaTopicResponse> revisions = dsaTopicService.getTopicsDueForRevision(userDetails.getId());
+        return ResponseEntity.ok(revisions);
+    }
+
+    @PostMapping("/{id}/review")
+    public ResponseEntity<DsaTopicResponse> reviewTopic(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        DsaTopicResponse response = dsaTopicService.reviewTopic(userDetails.getId(), id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/sync")
+    public ResponseEntity<com.example.demo.dto.CodingProfileStatsDto> syncProfile(
+            @Valid @RequestBody com.example.demo.dto.SyncProfileRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        com.example.demo.dto.CodingProfileStatsDto stats =
+                codingProfileSyncService.syncProfile(userDetails.getId(), request);
+        return ResponseEntity.ok(stats);
     }
 
     @PostMapping

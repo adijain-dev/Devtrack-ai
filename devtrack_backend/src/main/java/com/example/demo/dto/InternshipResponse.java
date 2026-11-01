@@ -15,5 +15,9 @@ public class InternshipResponse {
     private String jobLink;
     private ApplicationStatus status;
     private LocalDate appliedDate;
+    private java.time.LocalDateTime interviewDate;
+    private Boolean reminderEnabled;
+    private String resumeUrl;
+    private String resumeFileName;
     private String notes;
 }

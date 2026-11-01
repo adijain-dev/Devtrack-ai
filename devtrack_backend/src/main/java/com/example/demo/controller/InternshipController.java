@@ -26,6 +26,13 @@ public class InternshipController {
         return ResponseEntity.ok(internships);
     }
 
+    @GetMapping("/upcoming-interviews")
+    public ResponseEntity<List<InternshipResponse>> getUpcomingInterviews(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<InternshipResponse> interviews = internshipService.getUpcomingInterviews(userDetails.getId());
+        return ResponseEntity.ok(interviews);
+    }
+
     @PostMapping
     public ResponseEntity<InternshipResponse> createInternship(
             @Valid @RequestBody InternshipRequest request,

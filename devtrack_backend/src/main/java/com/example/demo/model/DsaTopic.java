@@ -36,6 +36,14 @@ public class DsaTopic {
 
     private LocalDate solvedDate;
 
+    private LocalDate nextRevisionDate;
+
+    private Integer revisionIntervalDays = 7;
+
+    private String platform = "MANUAL"; // MANUAL, LEETCODE, CODEFORCES
+
+    private String problemUrl;
+
     @Column(columnDefinition = "TEXT")
     private String notes;
 

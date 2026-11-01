@@ -32,9 +32,17 @@ class AuthRepositoryImpl implements AuthRepository {
         throw Exception('Server returned an unexpected status code: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      // Custom handling for Dio network exceptions
-      final errorMessage = e.response?.data['message'] ?? 'Failed to log in. Please check your connection.';
-      throw Exception(errorMessage);
+      if (e.response?.data is Map && e.response?.data['message'] != null) {
+        throw Exception(e.response!.data['message']);
+      }
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.response == null) {
+        throw Exception(
+          'Cannot connect to backend server. Please ensure the backend is running on port 8080.',
+        );
+      }
+      throw Exception('Server error (${e.response?.statusCode}). Please check your server.');
     } catch (e) {
       throw Exception('An unexpected error occurred during login.');
     }
@@ -56,10 +64,117 @@ class AuthRepositoryImpl implements AuthRepository {
         throw Exception('Server returned an unexpected status code: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      final errorMessage = e.response?.data['message'] ?? 'Failed to register. Please check your credentials.';
-      throw Exception(errorMessage);
+      if (e.response?.data is Map && e.response?.data['message'] != null) {
+        throw Exception(e.response!.data['message']);
+      }
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.response == null) {
+        throw Exception(
+          'Cannot connect to backend server. Please ensure the backend is running on port 8080.',
+        );
+      }
+      throw Exception('Server error (${e.response?.statusCode}). Please check your server.');
     } catch (e) {
       throw Exception('An unexpected error occurred during registration.');
+    }
+  }
+
+  @override
+  Future<Map<String, String>> refreshToken(String refreshToken) async {
+    try {
+      final response = await _dio.post(
+        '/api/auth/refreshtoken',
+        data: {'refreshToken': refreshToken},
+      );
+
+      if (response.statusCode == 200 && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        return {
+          'accessToken': data['accessToken']?.toString() ?? '',
+          'refreshToken': data['refreshToken']?.toString() ?? refreshToken,
+        };
+      }
+      throw Exception('Failed to refresh token');
+    } on DioException catch (e) {
+      final msg = e.response?.data is Map ? e.response?.data['message'] : null;
+      throw Exception(msg ?? 'Session expired. Please log in again.');
+    }
+  }
+
+  @override
+  Future<String> forgotPassword(String email) async {
+    try {
+      final response = await _dio.post(
+        '/api/auth/forgot-password',
+        data: {'email': email},
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        return response.data['message']?.toString() ?? 'Reset code sent.';
+      }
+      return 'Reset instructions sent.';
+    } on DioException catch (e) {
+      final msg = e.response?.data is Map ? e.response?.data['message'] : null;
+      throw Exception(msg ?? 'Failed to send reset code. Please try again.');
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String email, String resetCode, String newPassword) async {
+    try {
+      final response = await _dio.post(
+        '/api/auth/reset-password',
+        data: {
+          'email': email,
+          'resetCode': resetCode,
+          'newPassword': newPassword,
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Server returned error: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      final msg = e.response?.data is Map ? e.response?.data['message'] : null;
+      throw Exception(msg ?? 'Invalid or expired reset code.');
+    }
+  }
+
+  @override
+  Future<User> updateProfile(String name, String? avatarUrl) async {
+    try {
+      final response = await _dio.put(
+        '/api/auth/profile',
+        data: {
+          'name': name,
+          'avatarUrl': ?avatarUrl,
+        },
+      );
+      if (response.statusCode == 200 && response.data is Map) {
+        return UserModel.fromJson(response.data as Map<String, dynamic>);
+      }
+      throw Exception('Failed to update profile');
+    } on DioException catch (e) {
+      final msg = e.response?.data is Map ? e.response?.data['message'] : null;
+      throw Exception(msg ?? 'Failed to update profile.');
+    }
+  }
+
+  @override
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    try {
+      final response = await _dio.put(
+        '/api/auth/change-password',
+        data: {
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
+        },
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Server returned error: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      final msg = e.response?.data is Map ? e.response?.data['message'] : null;
+      throw Exception(msg ?? 'Current password is incorrect.');
     }
   }
 }
